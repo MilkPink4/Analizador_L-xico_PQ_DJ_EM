@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Analizador_Léxico_PQ_DJ_EM.Clases
+{
+    internal class tbResultados
+    {
+        int IdResultado { get; set; }
+
+        int IdToken { get; set; }
+
+        int Linea { get; set; }
+
+        int Columna { get; set; }
+
+        String Identificador { get; set; }
+    }
+}
