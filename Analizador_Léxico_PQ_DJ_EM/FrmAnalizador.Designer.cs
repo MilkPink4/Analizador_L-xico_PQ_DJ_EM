@@ -28,39 +28,40 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.dgvResultado = new System.Windows.Forms.DataGridView();
+            this.dgvError = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.button3 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+            this.btnAnalizar = new System.Windows.Forms.Button();
+            this.btnLimpiar = new System.Windows.Forms.Button();
+            this.rtbTexto = new System.Windows.Forms.RichTextBox();
+            this.btnCargar = new System.Windows.Forms.Button();
+            this.lbltokens = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResultado)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvError)).BeginInit();
             this.SuspendLayout();
             // 
-            // dataGridView1
+            // dgvResultado
             // 
-            this.dataGridView1.BackgroundColor = System.Drawing.Color.LightBlue;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(34, 321);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(345, 125);
-            this.dataGridView1.TabIndex = 0;
+            this.dgvResultado.BackgroundColor = System.Drawing.Color.LightBlue;
+            this.dgvResultado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvResultado.Location = new System.Drawing.Point(34, 321);
+            this.dgvResultado.Name = "dgvResultado";
+            this.dgvResultado.RowHeadersWidth = 51;
+            this.dgvResultado.RowTemplate.Height = 24;
+            this.dgvResultado.Size = new System.Drawing.Size(345, 125);
+            this.dgvResultado.TabIndex = 0;
             // 
-            // dataGridView2
+            // dgvError
             // 
-            this.dataGridView2.BackgroundColor = System.Drawing.Color.LightBlue;
-            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(423, 321);
-            this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.RowHeadersWidth = 51;
-            this.dataGridView2.RowTemplate.Height = 24;
-            this.dataGridView2.Size = new System.Drawing.Size(345, 125);
-            this.dataGridView2.TabIndex = 1;
+            this.dgvError.BackgroundColor = System.Drawing.Color.LightBlue;
+            this.dgvError.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvError.Location = new System.Drawing.Point(423, 321);
+            this.dgvError.Name = "dgvError";
+            this.dgvError.RowHeadersWidth = 51;
+            this.dgvError.RowTemplate.Height = 24;
+            this.dgvError.Size = new System.Drawing.Size(345, 125);
+            this.dgvError.TabIndex = 1;
             // 
             // label1
             // 
@@ -82,50 +83,65 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Errores";
             // 
-            // button1
+            // btnAnalizar
             // 
-            this.button1.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.button1.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.button1.Location = new System.Drawing.Point(641, 105);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(127, 75);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "ANALIZAR";
-            this.button1.UseVisualStyleBackColor = false;
+            this.btnAnalizar.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.btnAnalizar.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAnalizar.ForeColor = System.Drawing.Color.DarkSlateGray;
+            this.btnAnalizar.Location = new System.Drawing.Point(641, 105);
+            this.btnAnalizar.Name = "btnAnalizar";
+            this.btnAnalizar.Size = new System.Drawing.Size(127, 75);
+            this.btnAnalizar.TabIndex = 4;
+            this.btnAnalizar.Text = "ANALIZAR";
+            this.btnAnalizar.UseVisualStyleBackColor = false;
+            this.btnAnalizar.Click += new System.EventHandler(this.btnAnalizar_Click);
             // 
-            // button2
+            // btnLimpiar
             // 
-            this.button2.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.button2.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.button2.Location = new System.Drawing.Point(641, 200);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(127, 75);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "LIMPIAR";
-            this.button2.UseVisualStyleBackColor = false;
+            this.btnLimpiar.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.btnLimpiar.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLimpiar.ForeColor = System.Drawing.Color.DarkSlateGray;
+            this.btnLimpiar.Location = new System.Drawing.Point(641, 200);
+            this.btnLimpiar.Name = "btnLimpiar";
+            this.btnLimpiar.Size = new System.Drawing.Size(127, 75);
+            this.btnLimpiar.TabIndex = 5;
+            this.btnLimpiar.Text = "LIMPIAR";
+            this.btnLimpiar.UseVisualStyleBackColor = false;
+            this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
-            // richTextBox1
+            // rtbTexto
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(37, 85);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(342, 190);
-            this.richTextBox1.TabIndex = 6;
-            this.richTextBox1.Text = "";
+            this.rtbTexto.Location = new System.Drawing.Point(37, 85);
+            this.rtbTexto.Name = "rtbTexto";
+            this.rtbTexto.Size = new System.Drawing.Size(342, 190);
+            this.rtbTexto.TabIndex = 6;
+            this.rtbTexto.Text = "";
             // 
-            // button3
+            // btnCargar
             // 
-            this.button3.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.button3.Location = new System.Drawing.Point(37, 38);
-            this.button3.Name = "button3";
-            this.button3.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.button3.Size = new System.Drawing.Size(124, 41);
-            this.button3.TabIndex = 7;
-            this.button3.Text = "CARGAR TEXTO";
-            this.button3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button3.UseVisualStyleBackColor = true;
+            this.btnCargar.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCargar.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.btnCargar.Location = new System.Drawing.Point(37, 38);
+            this.btnCargar.Name = "btnCargar";
+            this.btnCargar.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnCargar.Size = new System.Drawing.Size(124, 41);
+            this.btnCargar.TabIndex = 7;
+            this.btnCargar.Text = "CARGAR TEXTO";
+            this.btnCargar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnCargar.UseVisualStyleBackColor = true;
+            this.btnCargar.Click += new System.EventHandler(this.btnCargar_Click);
+            // 
+            // lbltokens
+            // 
+            this.lbltokens.AutoSize = true;
+            this.lbltokens.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbltokens.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.lbltokens.Location = new System.Drawing.Point(691, 9);
+            this.lbltokens.Name = "lbltokens";
+            this.lbltokens.Size = new System.Drawing.Size(74, 17);
+            this.lbltokens.TabIndex = 10;
+            this.lbltokens.Text = "Ir a Tokens";
+            this.lbltokens.Click += new System.EventHandler(this.lbltokens_Click);
             // 
             // FrmAnalizador
             // 
@@ -133,19 +149,20 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Azure;
             this.ClientSize = new System.Drawing.Size(800, 481);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.richTextBox1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.lbltokens);
+            this.Controls.Add(this.btnCargar);
+            this.Controls.Add(this.rtbTexto);
+            this.Controls.Add(this.btnLimpiar);
+            this.Controls.Add(this.btnAnalizar);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.dataGridView2);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.dgvError);
+            this.Controls.Add(this.dgvResultado);
             this.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "FrmAnalizador";
             this.Text = "FrmAnalizador";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResultado)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvError)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -153,13 +170,14 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.DataGridView dgvResultado;
+        private System.Windows.Forms.DataGridView dgvError;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnAnalizar;
+        private System.Windows.Forms.Button btnLimpiar;
+        private System.Windows.Forms.RichTextBox rtbTexto;
+        private System.Windows.Forms.Button btnCargar;
+        private System.Windows.Forms.Label lbltokens;
     }
 }

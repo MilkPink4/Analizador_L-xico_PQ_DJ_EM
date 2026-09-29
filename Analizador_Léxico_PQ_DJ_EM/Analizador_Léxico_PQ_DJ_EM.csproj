@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clases\DatosCompartidos.cs" />
+    <Compile Include="Clases\ElementoSimbolo.cs" />
     <Compile Include="Clases\LecturaAnalizador.cs" />
     <Compile Include="Clases\tbError.cs" />
     <Compile Include="Clases\tbResultados.cs" />

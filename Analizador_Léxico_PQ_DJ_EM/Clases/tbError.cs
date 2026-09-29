@@ -5,14 +5,26 @@ namespace Analizador_Léxico_PQ_DJ_EM.Clases
 {
     internal class tbError
     {
-        int IdError { get; set; }
+        public int IdError { get; set; }
+        public int LineaError { get; set; }
+        public int ColumnaError { get; set; }
+        public string Error { get; set; }
+        public string Observacion { get; set; }
 
-        int LineaError { get; set; }
+        public tbError() { }
 
-        int ColumnaError { get; set; }
+        public tbError(int idError, int lineaError, int columnaError, string error, string observacion)
+        {
+            IdError = idError;
+            LineaError = lineaError;
+            ColumnaError = columnaError;
+            Error = error;
+            Observacion = observacion;
+        }
 
-        String Error { get; set; }
-
-        String Observacion { get; set; }
+        public override string ToString()
+        {
+            return $"[ERROR LÉXICO] Línea {LineaError}, Col {ColumnaError} | Carácter/Cadena: '{Error}' | {Observacion}";
+        }
     }
 }

@@ -30,14 +30,15 @@
         {
             this.txtToken = new System.Windows.Forms.TextBox();
             this.txtSimbolo = new System.Windows.Forms.TextBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dgvTablaSimbolos = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btnAnalizar = new System.Windows.Forms.Button();
+            this.btnBuscar = new System.Windows.Forms.Button();
+            this.btnEliminar = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.lblAnalizador = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTablaSimbolos)).BeginInit();
             this.SuspendLayout();
             // 
             // txtToken
@@ -54,16 +55,16 @@
             this.txtSimbolo.Size = new System.Drawing.Size(139, 23);
             this.txtSimbolo.TabIndex = 1;
             // 
-            // dataGridView1
+            // dgvTablaSimbolos
             // 
-            this.dataGridView1.BackgroundColor = System.Drawing.Color.LightBlue;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(44, 239);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(416, 326);
-            this.dataGridView1.TabIndex = 2;
+            this.dgvTablaSimbolos.BackgroundColor = System.Drawing.Color.LightBlue;
+            this.dgvTablaSimbolos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTablaSimbolos.Location = new System.Drawing.Point(44, 239);
+            this.dgvTablaSimbolos.Name = "dgvTablaSimbolos";
+            this.dgvTablaSimbolos.RowHeadersWidth = 51;
+            this.dgvTablaSimbolos.RowTemplate.Height = 24;
+            this.dgvTablaSimbolos.Size = new System.Drawing.Size(416, 326);
+            this.dgvTablaSimbolos.TabIndex = 2;
             // 
             // label1
             // 
@@ -85,41 +86,44 @@
             this.label2.TabIndex = 4;
             this.label2.Text = "Simbolo";
             // 
-            // button1
+            // btnAnalizar
             // 
-            this.button1.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.button1.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.button1.Location = new System.Drawing.Point(44, 161);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(99, 62);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = false;
+            this.btnAnalizar.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.btnAnalizar.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAnalizar.ForeColor = System.Drawing.Color.DarkSlateGray;
+            this.btnAnalizar.Location = new System.Drawing.Point(44, 161);
+            this.btnAnalizar.Name = "btnAnalizar";
+            this.btnAnalizar.Size = new System.Drawing.Size(99, 62);
+            this.btnAnalizar.TabIndex = 5;
+            this.btnAnalizar.Text = "ANALIZAR";
+            this.btnAnalizar.UseVisualStyleBackColor = false;
+            this.btnAnalizar.Click += new System.EventHandler(this.btnAnalizar_Click);
             // 
-            // button2
+            // btnBuscar
             // 
-            this.button2.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.button2.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.button2.Location = new System.Drawing.Point(207, 161);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(99, 62);
-            this.button2.TabIndex = 6;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = false;
+            this.btnBuscar.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.btnBuscar.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBuscar.ForeColor = System.Drawing.Color.DarkSlateGray;
+            this.btnBuscar.Location = new System.Drawing.Point(207, 161);
+            this.btnBuscar.Name = "btnBuscar";
+            this.btnBuscar.Size = new System.Drawing.Size(99, 62);
+            this.btnBuscar.TabIndex = 6;
+            this.btnBuscar.Text = "BUSCAR";
+            this.btnBuscar.UseVisualStyleBackColor = false;
+            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
             // 
-            // button3
+            // btnEliminar
             // 
-            this.button3.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.button3.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.button3.Location = new System.Drawing.Point(360, 161);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(100, 62);
-            this.button3.TabIndex = 7;
-            this.button3.Text = "button3";
-            this.button3.UseVisualStyleBackColor = false;
+            this.btnEliminar.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.btnEliminar.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEliminar.ForeColor = System.Drawing.Color.DarkSlateGray;
+            this.btnEliminar.Location = new System.Drawing.Point(360, 161);
+            this.btnEliminar.Name = "btnEliminar";
+            this.btnEliminar.Size = new System.Drawing.Size(100, 62);
+            this.btnEliminar.TabIndex = 7;
+            this.btnEliminar.Text = "ELIMINAR";
+            this.btnEliminar.UseVisualStyleBackColor = false;
+            this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
             // 
             // label3
             // 
@@ -128,9 +132,21 @@
             this.label3.ForeColor = System.Drawing.Color.DarkSlateGray;
             this.label3.Location = new System.Drawing.Point(183, 19);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(142, 40);
+            this.label3.Size = new System.Drawing.Size(137, 39);
             this.label3.TabIndex = 8;
             this.label3.Text = "TOKENS";
+            // 
+            // lblAnalizador
+            // 
+            this.lblAnalizador.AutoSize = true;
+            this.lblAnalizador.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAnalizador.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.lblAnalizador.Location = new System.Drawing.Point(389, 9);
+            this.lblAnalizador.Name = "lblAnalizador";
+            this.lblAnalizador.Size = new System.Drawing.Size(104, 17);
+            this.lblAnalizador.TabIndex = 9;
+            this.lblAnalizador.Text = "Ir al Analizador";
+            this.lblAnalizador.Click += new System.EventHandler(this.lblAnalizador_Click);
             // 
             // FrmTokens
             // 
@@ -138,19 +154,21 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Azure;
             this.ClientSize = new System.Drawing.Size(505, 600);
+            this.Controls.Add(this.lblAnalizador);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnEliminar);
+            this.Controls.Add(this.btnBuscar);
+            this.Controls.Add(this.btnAnalizar);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.dgvTablaSimbolos);
             this.Controls.Add(this.txtSimbolo);
             this.Controls.Add(this.txtToken);
             this.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "FrmTokens";
             this.Text = "FrmTokens";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.Load += new System.EventHandler(this.FrmTokens_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTablaSimbolos)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -160,12 +178,13 @@
 
         private System.Windows.Forms.TextBox txtToken;
         private System.Windows.Forms.TextBox txtSimbolo;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dgvTablaSimbolos;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnAnalizar;
+        private System.Windows.Forms.Button btnBuscar;
+        private System.Windows.Forms.Button btnEliminar;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblAnalizador;
     }
 }
