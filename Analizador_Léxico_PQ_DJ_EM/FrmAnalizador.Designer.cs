@@ -136,7 +136,7 @@
             this.lbltokens.AutoSize = true;
             this.lbltokens.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbltokens.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.lbltokens.Location = new System.Drawing.Point(691, 9);
+            this.lbltokens.Location = new System.Drawing.Point(694, 38);
             this.lbltokens.Name = "lbltokens";
             this.lbltokens.Size = new System.Drawing.Size(74, 17);
             this.lbltokens.TabIndex = 10;

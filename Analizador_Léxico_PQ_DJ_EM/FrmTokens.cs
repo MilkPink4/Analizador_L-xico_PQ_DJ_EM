@@ -16,71 +16,100 @@ namespace Analizador_Léxico_PQ_DJ_EM
             InitializeComponent();
         }
 
+        int idTokenSeleccionado = 0;
+
         private void FrmTokens_Load(object sender, EventArgs e)
         {
-            ActualizarGrid();
+            PalabrasReservadas();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void ActualizarGrid(IEnumerable<tbResultados> fuenteDatos = null)
+        public class ConexionBD
         {
-            dgvTablaSimbolos.DataSource = null;
-            dgvTablaSimbolos.AutoGenerateColumns = true;
+            public SqlConnection ObtenerConexion()
+            {
+                string cadena = @"Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=BDAnalizador; Integrated Security=True";
+                return new SqlConnection(cadena);
+            }
 
-            var datos = fuenteDatos ?? DatosCompartidos.Motor.ObtenerTokens();
+        }
 
-            var datosOrdenados = datos.OrderBy(t => t.Identificador).ToList();
+        public void PalabrasReservadas()
+        {
+            ConexionBD conexionBD = new ConexionBD();
+            using (SqlConnection conexion = conexionBD.ObtenerConexion())
+            {
+                conexion.Open();
+                string sql = "SELECT IdToken, Token, Tipo FROM Token";
+                try
+                {
+                    SqlDataAdapter sqlComando = new SqlDataAdapter(sql, conexion);
+                    DataTable dt = new DataTable();
+                    sqlComando.Fill(dt);
+                    dgvTablaSimbolos.DataSource = dt;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error al obtener las palabras reservadas: " + ex.Message);
+                }
 
-            dgvTablaSimbolos.DataSource = new BindingList<tbResultados>(datosOrdenados);
-            dgvTablaSimbolos.AutoResizeColumns();
+            }
         }
 
         private void btnAnalizar_Click(object sender, System.EventArgs e)
         {
-            txtToken.Clear();
-            txtSimbolo.Clear();
-            ActualizarGrid();
-        }
-
-        private void btnBuscar_Click(object sender, System.EventArgs e)
-        {
-            string filtroToken = txtToken.Text.Trim().ToLower();
-            string filtroSimbolo = txtSimbolo.Text.Trim().ToLower();
-
-            var tokensGlobales = DatosCompartidos.Motor.ObtenerTokens();
-
-            var resultados = tokensGlobales.Where(t =>
-                (string.IsNullOrEmpty(filtroToken) || (t.TipoToken != null && t.TipoToken.ToLower().Contains(filtroToken))) &&
-                (string.IsNullOrEmpty(filtroSimbolo) || (t.Identificador != null && t.Identificador.ToLower().Contains(filtroSimbolo)))
-            ).ToList();
-
-            ActualizarGrid(resultados);
+            if (txtToken.Text != "" && txtSimbolo.Text != "")
+            {
+                ConexionBD conexionBD = new ConexionBD();
+                using (SqlConnection conexion = conexionBD.ObtenerConexion())
+                {
+                    conexion.Open();
+                    string sql = "INSERT INTO Token (Token, Tipo) VALUES (@Token, @Tipo)";
+                    try
+                    {
+                        SqlCommand cmd = new SqlCommand(sql, conexion);
+                        cmd.Parameters.AddWithValue("@Token", txtToken.Text);
+                        cmd.Parameters.AddWithValue("@Tipo", txtSimbolo.Text);
+                        cmd.ExecuteNonQuery();
+                        PalabrasReservadas();
+                        txtToken.Clear();
+                        txtSimbolo.Clear();
+                        MessageBox.Show("Palabra reservada Agregada","Exito", MessageBoxButtons.OK,MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error al agregar el token: " + ex.Message);
+                    }
+                }
+            }
+            else { 
+                MessageBox.Show("Por favor, complete todos los campos antes de agregar un token.", "Campos incompletos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void btnEliminar_Click(object sender, System.EventArgs e)
         {
-            string simboloAEliminar = txtSimbolo.Text.Trim();
-
-            if (string.IsNullOrEmpty(simboloAEliminar))
+            if (idTokenSeleccionado > 0)
             {
-                MessageBox.Show("Ingrese el nombre del símbolo a eliminar en el campo 'Simbolo'.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            var listaTokens = DatosCompartidos.Motor.ObtenerTokens();
-            int eliminados = listaTokens.RemoveAll(t => t.Identificador != null && t.Identificador.Equals(simboloAEliminar, StringComparison.OrdinalIgnoreCase));
-
-            if (eliminados > 0)
-            {
-                MessageBox.Show($"Se eliminó '{simboloAEliminar}' ({eliminados} coincidencia(s)).", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                txtSimbolo.Clear();
-                ActualizarGrid();
-            }
-            else
-            {
-                MessageBox.Show($"No se encontró ningún token con el nombre '{simboloAEliminar}'.", "No encontrado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ConexionBD conexionBD = new ConexionBD();
+                using (SqlConnection conexion = conexionBD.ObtenerConexion())
+                {
+                    conexion.Open();
+                    string sql = "DELETE FROM Token WHERE IdToken = @IdToken";
+                    try
+                    {
+                        SqlCommand cmd = new SqlCommand(sql, conexion);
+                        cmd.Parameters.AddWithValue("@IdToken", idTokenSeleccionado);
+                        cmd.ExecuteNonQuery();
+                        PalabrasReservadas();
+                        idTokenSeleccionado = 0;
+                        MessageBox.Show("Palabra reservada Eliminada", "Exito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        idTokenSeleccionado = 0;
+                        Console.WriteLine("Error al eliminar el token: " + ex.Message);
+                    }
+                }
             }
         }
 
@@ -89,6 +118,18 @@ namespace Analizador_Léxico_PQ_DJ_EM
             FrmAnalizador FrmAnalizador = new FrmAnalizador();
             this.Hide();
             FrmAnalizador.Show();
+        }
+
+        private void dgvTablaSimbolos_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //Aqui quiero llenar mis txt con la celda seleccionada
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dgvTablaSimbolos.Rows[e.RowIndex];
+                idTokenSeleccionado = Convert.ToInt32(row.Cells["IdToken"].Value);
+                txtToken.Text = row.Cells["Token"].Value.ToString();
+                txtSimbolo.Text = row.Cells["Tipo"].Value.ToString();
+            }
         }
     }
 }

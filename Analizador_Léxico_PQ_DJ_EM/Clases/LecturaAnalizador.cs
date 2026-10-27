@@ -1,33 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Data;
+using System.Data.SqlClient;
 
 namespace Analizador_Léxico_PQ_DJ_EM.Clases
 {
     internal class LecturaAnalizador
     {
+        public class ConexionBD
+        {
+            public SqlConnection ObtenerConexion()
+            {
+                string cadena = @"Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=BDAnalizador; Integrated Security=True";
+                return new SqlConnection(cadena);
+            }
+        }
+
         int IdLecturaA { get; set; }
-
         String Resultado { get; set; }
-
         String Error { get; set; }
 
         private List<tbResultados> listaTokens;
         private List<tbError> listaErrores;
         private TablaDeSimbolos tablaSimbolos;
 
-        private readonly HashSet<string> palabrasReservadas = new HashSet<string>()
+        // Modificado a Diccionario para almacenar el Token y su Tipo específico de la BD
+        private readonly Dictionary<string, string> palabrasReservadas = new Dictionary<string, string>();
+
+        public void PalabrasReservadas()
         {
-            "int", "float", "double", "char", "bool", "string", "void",
-            "if", "else", "while", "for", "switch", "case", "break", "continue", "return",
-            "class", "static", "true", "false", "foreach"
-        };
+            ConexionBD conexionBD = new ConexionBD();
+            palabrasReservadas.Clear();
+            using (SqlConnection conexion = conexionBD.ObtenerConexion())
+            {
+                conexion.Open();
+                string sql = "SELECT Token, Tipo FROM Token";
+                try
+                {
+                    SqlCommand sqlComando = new SqlCommand(sql, conexion);
+                    using (SqlDataReader reader = sqlComando.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string token = reader.GetString(0);
+                            string tipo = reader.GetString(1);
+                            // Se almacena la relación Token -> Tipo obtenido de la base de datos
+                            if (!palabrasReservadas.ContainsKey(token))
+                            {
+                                palabrasReservadas.Add(token, tipo);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error al obtener las palabras reservadas: " + ex.Message);
+                    palabrasReservadas.Clear();
+                }
+            }
+        }
 
         public LecturaAnalizador()
         {
             listaTokens = new List<tbResultados>();
             listaErrores = new List<tbError>();
             tablaSimbolos = new TablaDeSimbolos();
+            PalabrasReservadas();
         }
 
         public List<tbResultados> ObtenerTokens() => listaTokens;
@@ -47,10 +85,19 @@ namespace Analizador_Léxico_PQ_DJ_EM.Clases
             int idResultCounter = 1;
             int idErrorCounter = 1;
 
+            // Pila para verificar delimitadores abiertos: (), {}, []
+            Stack<(char caracter, int linea, int columna)> pilaDelimitadores = new Stack<(char, int, int)>();
+
+            // Bandera para control básico de sentencia y punto y coma
+            bool sentenciaActiva = false;
+            int lineaInicioSentencia = 1;
+            int colInicioSentencia = 1;
+
             while (posicion < longitud)
             {
                 char c = contenidoFuente[posicion];
 
+                //Bloque 1
                 if (c == '\n')
                 {
                     lineaActual++;
@@ -70,6 +117,7 @@ namespace Analizador_Léxico_PQ_DJ_EM.Clases
                     continue;
                 }
 
+                //Bloque 2: Comentarios
                 if (c == '/')
                 {
                     if (posicion + 1 < longitud && contenidoFuente[posicion + 1] == '/')
@@ -119,6 +167,7 @@ namespace Analizador_Léxico_PQ_DJ_EM.Clases
                     }
                 }
 
+                //Bloque 3: Identificadores y Palabras Reservadas
                 if (char.IsLetter(c) || c == '_')
                 {
                     int colInicio = columnaActual;
@@ -131,16 +180,20 @@ namespace Analizador_Léxico_PQ_DJ_EM.Clases
                         columnaActual++;
                     }
 
-                    string tipo = palabrasReservadas.Contains(lexema) ? "TK_PALABRAS_RESERVADAS" : "TK_IDENTIFICADOR";
+                    // Se valida si pertenece a las palabras reservadas de la BD y se asigna su tipo correspondiente
+                    string tipo = palabrasReservadas.ContainsKey(lexema) ? palabrasReservadas[lexema] : "TK_IDENTIFICADOR";
                     listaTokens.Add(new tbResultados(idResultCounter++, 1, lexema, tipo, lineaActual, colInicio));
 
                     if (tipo == "TK_IDENTIFICADOR")
                     {
                         tablaSimbolos.AgregarIdentificador(lexema, lineaActual);
                     }
+
+                    sentenciaActiva = true;
                     continue;
                 }
 
+                // Bloque 4: Números
                 if (char.IsDigit(c))
                 {
                     int colInicio = columnaActual;
@@ -176,11 +229,13 @@ namespace Analizador_Léxico_PQ_DJ_EM.Clases
                         }
                     }
 
-                    string tipo = tienePunto ? "TK_NUMEROS_REALES" : "TK_NUMEROS_REALES";
+                    string tipo = "TK_NUMEROS_REALES";
                     listaTokens.Add(new tbResultados(idResultCounter++, 2, lexema, tipo, lineaActual, colInicio));
+                    sentenciaActiva = true;
                     continue;
                 }
 
+                //Bloque 5: Cadenas
                 if (c == '"')
                 {
                     int colInicio = columnaActual;
@@ -220,9 +275,11 @@ namespace Analizador_Léxico_PQ_DJ_EM.Clases
                     {
                         listaErrores.Add(new tbError(idErrorCounter++, lineaActual, colInicio, lexema, "Cadena de caracteres no cerrada correctamente"));
                     }
+                    sentenciaActiva = true;
                     continue;
                 }
 
+                //Bloque 6: Operadores Relacionales y Lógicos dobles
                 if (posicion + 1 < longitud)
                 {
                     string subDos = contenidoFuente.Substring(posicion, 2);
@@ -242,6 +299,7 @@ namespace Analizador_Léxico_PQ_DJ_EM.Clases
                     }
                 }
 
+                //Bloque 7: Símbolos de Puntuación y Delimitadores
                 if (c == '+' || c == '-')
                 {
                     listaTokens.Add(new tbResultados(idResultCounter++, 4, c.ToString(), "TK_OP_SUMA", lineaActual, columnaActual));
@@ -254,12 +312,58 @@ namespace Analizador_Léxico_PQ_DJ_EM.Clases
                     posicion++; columnaActual++;
                     continue;
                 }
-                if (c == ';' || c == ':' || c == ',' || c == '.' || c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']')
+
+                // Validación de Puntuación y Delimitadores (Apilado y Desapilado)
+                if (c == '(' || c == '{' || c == '[')
+                {
+                    pilaDelimitadores.Push((c, lineaActual, columnaActual));
+                    listaTokens.Add(new tbResultados(idResultCounter++, 6, c.ToString(), "TK_PUNTUACION", lineaActual, columnaActual));
+                    posicion++; columnaActual++;
+                    continue;
+                }
+                if (c == ')' || c == '}' || c == ']')
+                {
+                    char aperturaEsperada = ' ';
+                    if (c == ')') aperturaEsperada = '(';
+                    if (c == '}') aperturaEsperada = '{';
+                    if (c == ']') aperturaEsperada = '[';
+
+                    if (pilaDelimitadores.Count > 0 && pilaDelimitadores.Peek().caracter == aperturaEsperada)
+                    {
+                        pilaDelimitadores.Pop();
+                    }
+                    else
+                    {
+                        listaErrores.Add(new tbError(idErrorCounter++, lineaActual, columnaActual, c.ToString(), $"Delimitador de cierre '{c}' sin apertura correspondiente"));
+                    }
+
+                    // SI ES UNA LLAVE DE CIERRE '}', EL BLOQUE/SENTENCIA YA FINALIZÓ
+                    if (c == '}')
+                    {
+                        sentenciaActiva = false;
+                    }
+
+                    listaTokens.Add(new tbResultados(idResultCounter++, 6, c.ToString(), "TK_PUNTUACION", lineaActual, columnaActual));
+                    posicion++; columnaActual++;
+                    continue;
+                }
+
+                // Control del punto y coma ";" para cierre de sentencia
+                if (c == ';')
+                {
+                    sentenciaActiva = false; // Se cierra la sentencia actual correctamente
+                    listaTokens.Add(new tbResultados(idResultCounter++, 6, c.ToString(), "TK_PUNTUACION", lineaActual, columnaActual));
+                    posicion++; columnaActual++;
+                    continue;
+                }
+
+                if (c == ':' || c == ',' || c == '.')
                 {
                     listaTokens.Add(new tbResultados(idResultCounter++, 6, c.ToString(), "TK_PUNTUACION", lineaActual, columnaActual));
                     posicion++; columnaActual++;
                     continue;
                 }
+
                 if (c == '<' || c == '>')
                 {
                     listaTokens.Add(new tbResultados(idResultCounter++, 8, c.ToString(), "TK_OP_RELACIONALES", lineaActual, columnaActual));
@@ -268,8 +372,8 @@ namespace Analizador_Léxico_PQ_DJ_EM.Clases
                 }
                 if (c == '=' || c == '!' || c == 'v' || c == '^' || c == '\\')
                 {
-                    string tipo = (c == '=') ? "TK_OP_RELACIONALES" : "TK_OP_LOGICO";
-                    listaTokens.Add(new tbResultados(idResultCounter++, 7, c.ToString(), tipo, lineaActual, columnaActual));
+                    string tipoOp = (c == '=') ? "TK_OP_RELACIONALES" : "TK_OP_LOGICO";
+                    listaTokens.Add(new tbResultados(idResultCounter++, 7, c.ToString(), tipoOp, lineaActual, columnaActual));
                     posicion++; columnaActual++;
                     continue;
                 }
@@ -278,7 +382,19 @@ namespace Analizador_Léxico_PQ_DJ_EM.Clases
                 posicion++;
                 columnaActual++;
             }
+
+            // Validación al finalizar el archivo: Si quedaron delimitadores abiertos sin cerrar
+            while (pilaDelimitadores.Count > 0)
+            {
+                var abierto = pilaDelimitadores.Pop();
+                listaErrores.Add(new tbError(idErrorCounter++, abierto.linea, abierto.columna, abierto.caracter.ToString(), $"Sentencia abierta: El delimitador '{abierto.caracter}' nunca fue cerrado"));
+            }
+
+            // Validación de sentencia activa pendiente de punto y coma al final de la entrada
+            if (sentenciaActiva)
+            {
+                listaErrores.Add(new tbError(idErrorCounter++, lineaActual, columnaActual, ";", "Error sintáctico: Se esperaba un punto y coma ';' al final de la sentencia"));
+            }
         }
     }
-
 }
